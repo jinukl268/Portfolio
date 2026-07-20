@@ -1,0 +1,892 @@
+<!--
+  ============================================================
+  HOW TO CUSTOMIZE THIS PORTFOLIO
+  ============================================================
+  1. Search for "YOUR NAME" and replace with your actual name.
+  2. Search for "YOUR EMAIL" / "YOUR INSTAGRAM" / "YOUR YOUTUBE"
+     and drop in your real handles/links.
+  3. Each project card below has:
+       data-embed="" -> paste a YouTube/Vimeo EMBED url here,
+       e.g. https://www.youtube.com/embed/dQw4w9WgXcQ
+       (Get this from YouTube: Share > Embed > copy the src url)
+     Until you add a link, clicking the card just shows a note.
+  4. Swap the placeholder gradients (search "thumb thumb--")
+     for real <img> thumbnails if you'd rather show a still frame:
+       <div class="thumb thumb--01"><img src="yourframe.jpg" ...></div>
+  5. Edit the project TITLE / TAG / duration text directly in the
+     markup for each <article class="card">.
+  ============================================================
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jinu Lorance — Video Editor, Videographer &amp; Photographer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0b0d0c;
+    --surface: #14171a;
+    --surface-2: #1b1f22;
+    --text: #f2f0ea;
+    --text-muted: #9aa0a6;
+    --warm: #e8873a;
+    --cool: #2fa8a0;
+    --line: rgba(242,240,234,0.09);
+    --radius: 4px;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *{ animation-duration:0.001ms !important; transition-duration:0.001ms !important; }
+  }
+
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter', sans-serif;
+    line-height:1.5;
+    overflow-x:hidden;
+  }
+
+  /* film grain overlay */
+  .grain{
+    position:fixed; inset:0; pointer-events:none; z-index:1;
+    opacity:0.05; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* scroll scrubber = signature element */
+  .scrubber{
+    position:fixed; top:0; left:0; width:100%; height:3px;
+    background:var(--surface-2); z-index:1000;
+  }
+  .scrubber__fill{
+    height:100%; width:0%;
+    background:linear-gradient(90deg, var(--cool), var(--warm));
+  }
+  .scrubber__head{
+    position:fixed; top:0; width:11px; height:11px; border-radius:50%;
+    background:var(--text); left:0%; transform:translate(-50%,-30%);
+    z-index:1001; box-shadow:0 0 0 3px var(--bg);
+    transition:left 0.05s linear;
+  }
+
+  .wrap{ max-width:1120px; margin:0 auto; padding:0 32px; }
+
+  /* ---------- NAV ---------- */
+  header{
+    position:sticky; top:3px; z-index:900;
+    background:rgba(11,13,12,0.85); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 32px; max-width:1120px; margin:0 auto;
+  }
+  .logo{
+    font-family:'Anton', sans-serif; letter-spacing:0.5px;
+    font-size:20px; text-transform:uppercase;
+  }
+  .logo span{ color:var(--warm); }
+  .navlinks{ display:flex; gap:28px; list-style:none; }
+  .navlinks a{
+    color:var(--text-muted); text-decoration:none; font-size:14px;
+    font-weight:500; letter-spacing:0.02em; transition:color 0.2s;
+  }
+  .navlinks a:hover, .navlinks a:focus-visible{ color:var(--text); }
+  .navlinks .mono-tag{ font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--cool); }
+  @media (max-width:680px){ .navlinks{ display:none; } }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative; padding:120px 0 100px;
+    border-bottom:1px solid var(--line);
+    overflow:hidden;
+  }
+  .hero__frame{ position:absolute; inset:0; z-index:0; }
+  .hero__bgvideo{
+    position:absolute; inset:0; width:100%; height:100%;
+    object-fit:cover; opacity:0.28;
+  }
+  .hero::before{
+    content:""; position:absolute; inset:-20% -10%;
+    background:
+      radial-gradient(ellipse at 20% 20%, rgba(47,168,160,0.16), transparent 55%),
+      radial-gradient(ellipse at 80% 60%, rgba(232,135,58,0.14), transparent 55%),
+      linear-gradient(180deg, rgba(11,13,12,0.35), rgba(11,13,12,0.9) 85%);
+    z-index:1;
+  }
+  .hero__inner{ position:relative; z-index:2; }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:'JetBrains Mono', monospace; font-size:13px;
+    color:var(--cool); border:1px solid var(--line);
+    padding:6px 12px; border-radius:20px; margin-bottom:28px;
+  }
+  .eyebrow .dot{
+    width:6px; height:6px; border-radius:50%; background:var(--warm);
+    animation:pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:0.25;} }
+
+  h1.display{
+    font-family:'Anton', sans-serif;
+    font-size:clamp(42px, 7vw, 84px);
+    line-height:0.98; text-transform:uppercase;
+    letter-spacing:0.3px; max-width:900px;
+  }
+  h1.display .accent{ color:var(--warm); }
+  h1.display .accent2{ color:var(--cool); }
+
+  .hero p.sub{
+    margin-top:26px; max-width:520px; color:var(--text-muted);
+    font-size:17px;
+  }
+
+  .hero__ctas{ display:flex; gap:14px; margin-top:40px; flex-wrap:wrap; }
+  .btn{
+    font-family:'Inter', sans-serif; font-weight:600; font-size:14px;
+    padding:14px 26px; border-radius:var(--radius); text-decoration:none;
+    display:inline-flex; align-items:center; gap:8px;
+    border:1px solid transparent; cursor:pointer; transition:transform 0.15s ease, background 0.2s;
+  }
+  .btn:focus-visible{ outline:2px solid var(--cool); outline-offset:2px; }
+  .btn--primary{ background:var(--text); color:var(--bg); }
+  .btn--primary:hover{ transform:translateY(-2px); }
+  .btn--ghost{ border-color:var(--line); color:var(--text); }
+  .btn--ghost:hover{ border-color:var(--text-muted); }
+
+  /* chapter headers used across sections instead of generic 01/02/03 --
+     framed as video timecodes/chapters since the whole subject is a timeline */
+  .chapter{
+    display:flex; align-items:baseline; gap:16px; margin-bottom:44px;
+  }
+  .chapter__code{
+    font-family:'JetBrains Mono', monospace; color:var(--warm); font-size:14px;
+  }
+  .chapter__title{
+    font-family:'Anton', sans-serif; text-transform:uppercase;
+    font-size:clamp(22px,3vw,32px); letter-spacing:0.3px;
+  }
+  .chapter__line{ flex:1; height:1px; background:var(--line); }
+
+  section{ padding:100px 0; border-bottom:1px solid var(--line); }
+
+  /* ---------- ABOUT ---------- */
+  .about__grid{ display:grid; grid-template-columns:1.1fr 0.9fr; gap:64px; }
+  @media (max-width:800px){ .about__grid{ grid-template-columns:1fr; } }
+  .about p{ color:var(--text-muted); font-size:16px; margin-bottom:16px; max-width:52ch; }
+  .about strong{ color:var(--text); }
+
+  .toolbelt{ display:flex; flex-wrap:wrap; gap:10px; margin-top:24px; }
+  .chip{
+    font-family:'JetBrains Mono', monospace; font-size:12.5px;
+    border:1px solid var(--line); padding:8px 14px; border-radius:20px;
+    color:var(--text-muted); background:var(--surface);
+  }
+
+  .statcard{
+    background:var(--surface); border:1px solid var(--line);
+    border-radius:var(--radius); padding:26px; display:flex; flex-direction:column; gap:18px;
+  }
+  .statrow{ display:flex; justify-content:space-between; align-items:baseline; }
+  .statrow .num{ font-family:'Anton', sans-serif; font-size:30px; }
+  .statrow .num.warm{ color:var(--warm); }
+  .statrow .num.cool{ color:var(--cool); }
+  .statrow .lbl{ font-size:13px; color:var(--text-muted); text-align:right; max-width:55%; }
+
+  /* ---------- WORK GRID ---------- */
+  .grid{
+    display:grid; grid-template-columns:repeat(3, 1fr); gap:22px;
+  }
+  @media (max-width:900px){ .grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:600px){ .grid{ grid-template-columns:1fr; } }
+
+  .card{
+    background:var(--surface); border:1px solid var(--line);
+    border-radius:var(--radius); overflow:hidden; cursor:pointer;
+    transition:transform 0.2s ease, border-color 0.2s ease;
+  }
+  .card:hover, .card:focus-visible{ transform:translateY(-4px); border-color:rgba(242,240,234,0.2); }
+  .card:focus-visible{ outline:2px solid var(--cool); outline-offset:2px; }
+
+  .thumb{
+    position:relative; aspect-ratio:16/9; display:flex; align-items:center; justify-content:center;
+  }
+  .thumb--01{ background:linear-gradient(135deg,#1e3a3a,#2fa8a0 130%); }
+  .thumb--02{ background:linear-gradient(135deg,#3a2a1e,#e8873a 130%); }
+  .thumb--03{ background:linear-gradient(135deg,#1e223a,#4a5bd6 130%); }
+  .thumb--04{ background:linear-gradient(135deg,#3a1e2e,#d64a8a 130%); }
+  .thumb--05{ background:linear-gradient(135deg,#2a3a1e,#9ad64a 130%); }
+  .thumb--06{ background:linear-gradient(135deg,#1e2a3a,#4ac0d6 130%); }
+  .thumb--07{ background:linear-gradient(135deg,#3a301e,#d6b64a 130%); }
+  .thumb--08{ background:linear-gradient(135deg,#301e3a,#a64ad6 130%); }
+  .thumb--09{ background:linear-gradient(135deg,#3a1e1e,#d64a4a 130%); }
+  .thumb--10{ background:linear-gradient(135deg,#1e3a2e,#4ad699 130%); }
+
+  .thumb .play{
+    width:46px; height:46px; border-radius:50%;
+    background:rgba(11,13,12,0.55); border:1px solid rgba(242,240,234,0.4);
+    display:flex; align-items:center; justify-content:center;
+    backdrop-filter:blur(2px);
+  }
+  .thumb .play::after{
+    content:""; border-style:solid; border-width:7px 0 7px 11px;
+    border-color:transparent transparent transparent var(--text);
+    margin-left:3px;
+  }
+  .thumb .badge{
+    position:absolute; bottom:8px; right:8px;
+    font-family:'JetBrains Mono', monospace; font-size:11px;
+    background:rgba(11,13,12,0.75); padding:3px 7px; border-radius:3px;
+  }
+  .thumb .barwrap{
+    position:absolute; bottom:0; left:0; width:100%; height:3px;
+    background:rgba(255,255,255,0.15);
+  }
+  .thumb .bar{ height:100%; background:var(--warm); width:38%; }
+
+  .card__body{ padding:16px 18px 20px; }
+  .card__tag{
+    font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--cool);
+    text-transform:uppercase; letter-spacing:0.05em;
+  }
+  .card__title{ font-size:16px; font-weight:600; margin-top:6px; }
+  .card__note{ font-size:13px; color:var(--text-muted); margin-top:6px; }
+
+  /* ---------- REVIEWS ---------- */
+  .reviews__grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:20px; margin-bottom:64px;
+  }
+  @media (max-width:900px){ .reviews__grid{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:600px){ .reviews__grid{ grid-template-columns:1fr; } }
+  .review{
+    background:var(--surface); border:1px solid var(--line);
+    border-radius:var(--radius); padding:22px;
+  }
+  .review__stars{ color:var(--warm); font-size:15px; letter-spacing:2px; margin-bottom:12px; }
+  .review__stars .off{ color:var(--line); }
+  .review__text{ font-size:14.5px; color:var(--text); margin-bottom:16px; }
+  .review__name{ font-size:13px; color:var(--text-muted); font-family:'JetBrains Mono', monospace; }
+
+  .reviewform{
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+    padding:36px; max-width:560px; margin:0 auto;
+  }
+  .reviewform h3{ font-size:19px; margin-bottom:6px; }
+  .reviewform p.hint{ font-size:13.5px; color:var(--text-muted); margin-bottom:26px; }
+  .field{ margin-bottom:20px; text-align:left; }
+  .field label{ display:block; font-size:13px; color:var(--text-muted); margin-bottom:8px; }
+  .field input[type="text"], .field textarea{
+    width:100%; background:var(--bg); border:1px solid var(--line); border-radius:4px;
+    color:var(--text); padding:12px 14px; font-family:'Inter', sans-serif; font-size:14px;
+    resize:vertical;
+  }
+  .field input:focus, .field textarea:focus{ outline:2px solid var(--cool); outline-offset:1px; }
+
+  .starinput{ display:flex; flex-direction:row-reverse; justify-content:flex-end; gap:6px; }
+  .starinput input{ display:none; }
+  .starinput label{
+    font-size:26px; color:var(--line); cursor:pointer; margin:0; transition:color 0.15s;
+  }
+  .starinput input:checked ~ label,
+  .starinput label:hover,
+  .starinput label:hover ~ label{ color:var(--warm); }
+
+  .reviewform .btn{ width:100%; justify-content:center; }
+  .reviewform__success{
+    display:none; text-align:center; padding:20px 0; color:var(--cool);
+    font-family:'JetBrains Mono', monospace; font-size:14px;
+  }
+
+  /* ---------- SERVICES ---------- */
+  .services{ display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+  @media (max-width:900px){ .services{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:560px){ .services{ grid-template-columns:1fr; } }
+  .svc{
+    border:1px solid var(--line); border-radius:var(--radius);
+    padding:26px 20px; background:var(--surface);
+  }
+  .svc__code{ font-family:'JetBrains Mono', monospace; color:var(--warm); font-size:12px; }
+  .svc h3{ font-size:17px; margin:12px 0 8px; }
+  .svc p{ font-size:13.5px; color:var(--text-muted); }
+
+  /* ---------- CONTACT ---------- */
+  .contact{ text-align:center; border-bottom:none; }
+  .contact h2{
+    font-family:'Anton', sans-serif; text-transform:uppercase;
+    font-size:clamp(30px,5vw,54px); max-width:680px; margin:0 auto 20px;
+  }
+  .contact p{ color:var(--text-muted); max-width:480px; margin:0 auto 36px; }
+  .contact__links{ display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+
+  footer{
+    padding:28px 0; text-align:center;
+    font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--text-muted);
+  }
+
+  /* ---------- MODAL ---------- */
+  .modal{
+    position:fixed; inset:0; background:rgba(0,0,0,0.8);
+    display:none; align-items:center; justify-content:center; z-index:2000;
+    padding:24px;
+  }
+  .modal.open{ display:flex; }
+  .modal__inner{
+    background:var(--surface); border:1px solid var(--line); border-radius:6px;
+    max-width:900px; width:100%; overflow:hidden;
+  }
+  .modal__frame{ position:relative; aspect-ratio:16/9; background:#000; }
+  .modal__frame iframe{ width:100%; height:100%; border:0; }
+  .modal__empty{
+    height:100%; display:flex; align-items:center; justify-content:center;
+    color:var(--text-muted); font-size:14px; text-align:center; padding:20px;
+    font-family:'JetBrains Mono', monospace;
+  }
+  .modal__foot{ padding:14px 18px; display:flex; justify-content:space-between; align-items:center; }
+  .modal__foot span{ font-size:14px; font-weight:600; }
+  .modal__close{
+    background:none; border:1px solid var(--line); color:var(--text);
+    padding:8px 14px; border-radius:4px; cursor:pointer; font-size:13px;
+  }
+  .modal__close:hover{ border-color:var(--text-muted); }
+
+  /* ---------- LOGO MARK (aperture icon) ---------- */
+  .logo{ display:flex; align-items:center; gap:10px; }
+  .aperture{
+    width:26px; height:26px; flex-shrink:0;
+    transition:transform 0.5s cubic-bezier(.2,.8,.2,1);
+  }
+  .logo:hover .aperture{ transform:rotate(35deg); }
+  .aperture path{ transition:opacity 0.3s; }
+
+  /* ---------- VIEWFINDER CORNERS ---------- */
+  .viewfinder{ position:relative; }
+  .vf-corner{
+    position:absolute; width:22px; height:22px;
+    border:2px solid var(--text); opacity:0.55; z-index:3;
+    transition:opacity 0.25s, width 0.25s, height 0.25s;
+  }
+  .vf-corner.tl{ top:10px; left:10px; border-right:none; border-bottom:none; }
+  .vf-corner.tr{ top:10px; right:10px; border-left:none; border-bottom:none; }
+  .vf-corner.bl{ bottom:10px; left:10px; border-right:none; border-top:none; }
+  .vf-corner.br{ bottom:10px; right:10px; border-left:none; border-top:none; }
+  .card:hover .vf-corner, .card:focus-visible .vf-corner{ opacity:1; width:28px; height:28px; border-color:var(--warm); }
+  .hero__frame:hover .vf-corner{ opacity:0.9; border-color:var(--cool); }
+
+  /* ---------- HUD READOUT ---------- */
+  .hud{
+    display:flex; gap:18px; flex-wrap:wrap;
+    font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--text-muted);
+    letter-spacing:0.03em; margin-top:28px;
+  }
+  .hud span{ display:flex; align-items:center; gap:6px; }
+  .hud span::before{ content:"›"; color:var(--cool); }
+
+  /* ---------- APERTURE TRIAD (signature element) ---------- */
+  .triad-section{ padding:70px 0 90px; border-bottom:1px solid var(--line); }
+  .triad{
+    display:flex; align-items:center; justify-content:center; gap:0;
+    flex-wrap:wrap; position:relative; margin-bottom:10px;
+  }
+  .triad-item{
+    width:220px; height:220px; border-radius:50%;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; margin:0 -34px;
+    background:radial-gradient(circle at 50% 40%, rgba(255,255,255,0.03), transparent 70%);
+    border:1px solid var(--line);
+    animation:blade-in 0.8s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .triad-item:nth-child(1){ animation-delay:0s; border-color:rgba(47,168,160,0.35); }
+  .triad-item:nth-child(2){ animation-delay:0.12s; border-color:rgba(242,240,234,0.25); z-index:2; background:var(--surface); }
+  .triad-item:nth-child(3){ animation-delay:0.24s; border-color:rgba(232,135,58,0.35); }
+  @keyframes blade-in{
+    from{ opacity:0; transform:scale(0.8) rotate(-8deg); }
+    to{ opacity:1; transform:scale(1) rotate(0deg); }
+  }
+  .triad-item .ti-icon{ width:34px; height:34px; margin-bottom:10px; }
+  .triad-item .ti-label{
+    font-family:'Anton', sans-serif; text-transform:uppercase;
+    font-size:16px; letter-spacing:0.5px;
+  }
+  .triad-item .ti-sub{
+    font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--text-muted);
+    margin-top:6px;
+  }
+  @media (max-width:720px){
+    .triad{ flex-direction:column; }
+    .triad-item{ margin:-24px 0; }
+  }
+
+  .contents-wrapper{ display:contents; }
+
+  /* ---------- KINETIC TYPOGRAPHY ---------- */
+  .kinetic .word{
+    display:inline-block; opacity:0; transform:translateY(32px) rotate(1.5deg);
+    animation:word-in 0.7s cubic-bezier(.19,1,.22,1) forwards;
+    animation-delay:calc(var(--i, 0) * 0.045s + 0.05s);
+  }
+  @keyframes word-in{
+    to{ opacity:1; transform:translateY(0) rotate(0deg); }
+  }
+
+  .chapter{ opacity:0; transform:translateY(22px); transition:opacity 0.7s ease, transform 0.7s ease; }
+  .chapter.in-view{ opacity:1; transform:translateY(0); }
+  .chapter.in-view .chapter__line{
+    animation:line-grow 0.8s cubic-bezier(.2,.8,.2,1) both;
+  }
+  @keyframes line-grow{
+    from{ transform:scaleX(0); transform-origin:left; }
+    to{ transform:scaleX(1); transform-origin:left; }
+  }
+
+  .contact h2{ opacity:0; transform:translateY(22px); transition:opacity 0.7s ease, transform 0.7s ease; }
+  .contact h2.in-view{ opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="scrubber"><div class="scrubber__fill" id="scrubFill"></div></div>
+<div class="scrubber__head" id="scrubHead"></div>
+
+<header>
+  <nav>
+    <div class="logo">
+      <svg class="aperture" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="46" fill="none" stroke="var(--line)" stroke-width="2"/>
+        <g fill="var(--warm)">
+          <path d="M50 50 L50 8 A42 42 0 0 1 86 30 Z" opacity="0.85"/>
+          <path d="M50 50 L86 30 A42 42 0 0 1 86 70 Z" opacity="0.7" fill="var(--cool)"/>
+          <path d="M50 50 L86 70 A42 42 0 0 1 50 92 Z" opacity="0.85"/>
+          <path d="M50 50 L50 92 A42 42 0 0 1 14 70 Z" opacity="0.7" fill="var(--cool)"/>
+          <path d="M50 50 L14 70 A42 42 0 0 1 14 30 Z" opacity="0.85"/>
+          <path d="M50 50 L14 30 A42 42 0 0 1 50 8 Z" opacity="0.7" fill="var(--cool)"/>
+        </g>
+        <circle cx="50" cy="50" r="14" fill="var(--bg)"/>
+      </svg>
+      JINU<span>LORANCE</span>
+    </div>
+    <ul class="navlinks">
+      <li><a href="#work">Work</a></li>
+      <li><a href="#reviews">Reviews</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li class="mono-tag" id="clock">00:00:00:00</li>
+    </ul>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero__frame">
+    <video class="hero__bgvideo" src="signature_fn.mp4" autoplay muted loop playsinline></video>
+    <span class="vf-corner tl"></span><span class="vf-corner tr"></span>
+    <span class="vf-corner bl"></span><span class="vf-corner br"></span>
+  </div>
+  <div class="wrap hero__inner">
+    <div class="eyebrow"><span class="dot"></span> REC — BEHIND &amp; BEYOND THE LENS</div>
+    <h1 class="display kinetic"><span class="word" style="--i:0">I</span> <span class="word" style="--i:1">shoot</span> <span class="word" style="--i:2">it,</span> <span class="word" style="--i:3">frame</span> <span class="word" style="--i:4">it,</span> <span class="word" style="--i:5">and</span> <span class="word" style="--i:6">cut</span> <span class="word" style="--i:7">it</span> <span class="word" style="--i:8">into</span> <span class="accent"><span class="word" style="--i:9">something</span> <span class="word" style="--i:10">worth</span></span> <span class="accent2"><span class="word" style="--i:11">watching</span> <span class="word" style="--i:12">twice</span>.</span></h1>
+    <p class="sub">Video editor, videographer, and photographer — I handle the full chain from raw capture to final export for YouTube creators, brands, social media ads, and promotional videos.</p>
+    <div class="hero__ctas">
+      <a href="#work" class="btn btn--primary">Watch the reel</a>
+      <a href="#contact" class="btn btn--ghost">Get in touch</a>
+    </div>
+    <div class="hud">
+      <span>24MM · f/2.8</span>
+      <span>1/125 · ISO 400</span>
+      <span>4K · 60FPS</span>
+    </div>
+  </div>
+</section>
+
+<section class="triad-section">
+  <div class="wrap">
+    <div class="triad">
+      <div class="triad-item">
+        <svg class="ti-icon" viewBox="0 0 24 24" fill="none" stroke="var(--cool)" stroke-width="1.6"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+        <div class="ti-label">Videography</div>
+        <div class="ti-sub">On-location capture</div>
+      </div>
+      <div class="triad-item">
+        <svg class="ti-icon" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="1.6"><path d="M4 7h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="4"/></svg>
+        <div class="ti-label">Photography</div>
+        <div class="ti-sub">Stills &amp; frames</div>
+      </div>
+      <div class="triad-item">
+        <svg class="ti-icon" viewBox="0 0 24 24" fill="none" stroke="var(--warm)" stroke-width="1.6"><path d="M3 6h18M3 12h18M3 18h9"/><circle cx="17" cy="18" r="2"/></svg>
+        <div class="ti-label">Editing</div>
+        <div class="ti-sub">Cut, grade, deliver</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="about">
+  <div class="wrap">
+    <div class="chapter">
+      <span class="chapter__code">00:01</span>
+      <span class="chapter__title">Editor · Videographer · Photographer</span>
+      <span class="chapter__line"></span>
+    </div>
+    <div class="about__grid">
+      <div class="about">
+        <p>I'm <strong>Jinu Lorance</strong> — I shoot it, frame it, and cut it. My work spans three roles that usually get split across three people: capturing footage on location, taking stills, and editing the final piece for YouTube, social media ads, and promotional videos.</p>
+        <p>Because I handle the whole chain, the edit isn't an afterthought — I shoot with the cut already in mind, and I edit knowing exactly what the camera saw. My process starts with the story, not the timeline: what's the hook, where does interest dip, what earns the next 10 seconds.</p>
+        <div class="toolbelt">
+          <span class="chip">Premiere Pro</span>
+          <span class="chip">DaVinci Resolve</span>
+          <span class="chip">After Effects</span>
+          <span class="chip">Lightroom</span>
+          <span class="chip">Photoshop</span>
+          <span class="chip">Audition</span>
+          <span class="chip">Mirrorless &amp; DSLR</span>
+        </div>
+      </div>
+      <div class="statcard">
+        <div class="statrow"><span class="num warm" id="projectCount">10</span><span class="lbl">Projects in this reel</span></div>
+        <div class="statrow"><span class="num cool">24fps–60fps</span><span class="lbl">Comfortable across frame rates & formats</span></div>
+        <div class="statrow"><span class="num warm">16:9 / 9:16</span><span class="lbl">Long-form and vertical Shorts</span></div>
+        <div class="statrow"><span class="num cool">48–72h</span><span class="lbl">Typical turnaround per video</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="work">
+  <div class="wrap">
+    <div class="chapter">
+      <span class="chapter__code">00:02</span>
+      <span class="chapter__title">Selects</span>
+      <span class="chapter__line"></span>
+    </div>
+
+    <div class="grid">
+
+      <!-- CARD 1 -->
+      <article class="card" tabindex="0" role="button" data-embed="signature_fn.mp4" data-type="video" data-title="Signature Cut">
+        <div class="thumb thumb--01">
+          <video src="signature_fn.mp4" muted loop playsinline autoplay style="width:100%;height:100%;object-fit:cover;"></video>
+          <div class="play"></div><span class="badge">0:06</span><div class="barwrap"><div class="bar"></div></div>
+          <span class="vf-corner tl"></span><span class="vf-corner tr"></span><span class="vf-corner bl"></span><span class="vf-corner br"></span>
+        </div>
+        <div class="card__body">
+          <div class="card__tag">Signature</div>
+          <div class="card__title">Signature Cut</div>
+          <div class="card__note">Quick showcase clip — click to play full size</div>
+        </div>
+      </article>
+
+      <!-- Remaining project cards load dynamically from projects.json (edited via the admin panel at /admin) -->
+      <div id="dynamicCards" class="contents-wrapper"></div>
+
+    </div>
+  </div>
+</section>
+
+<section id="reviews">
+  <div class="wrap">
+    <div class="chapter">
+      <span class="chapter__code">00:03</span>
+      <span class="chapter__title">Client reviews</span>
+      <span class="chapter__line"></span>
+    </div>
+
+    <!--
+      REVIEWS DISPLAY — these 3 cards are placeholders/examples.
+      Once real reviews come in through the form below, check your
+      Netlify dashboard (Site > Forms), pick the ones you want to
+      feature, and paste them in here by copying a <div class="review">
+      block and editing the text/name/star count.
+    -->
+    <div class="reviews__grid">
+      <div class="review">
+        <div class="review__stars">★★★★★</div>
+        <div class="review__text">"Turnaround was fast and the pacing on my vlog completely changed — way more watch time since."</div>
+        <div class="review__name">— Sample Creator</div>
+      </div>
+      <div class="review">
+        <div class="review__stars">★★★★★<span class="off">★</span></div>
+        <div class="review__text">"Great communication throughout and the Shorts he cut performed better than ones I edited myself."</div>
+        <div class="review__name">— Sample Creator</div>
+      </div>
+      <div class="review">
+        <div class="review__stars">★★★★★</div>
+        <div class="review__text">"Color grading gave my channel a consistent look for the first time. Highly recommend."</div>
+        <div class="review__name">— Sample Creator</div>
+      </div>
+    </div>
+
+    <div class="reviewform">
+      <h3>Worked with me? Leave a review</h3>
+      <p class="hint">Takes 30 seconds — this goes straight to me, and I may feature it above.</p>
+
+      <div class="reviewform__success" id="reviewSuccess">Thanks — your review was submitted!</div>
+
+      <!--
+        Netlify Forms: no backend needed. Submissions show up in your
+        Netlify dashboard under Site configuration > Forms.
+        NOTE: this only works once the site is deployed on Netlify.
+        It will not capture submissions on GitHub Pages or when
+        previewed locally by opening the file directly.
+      -->
+      <form
+        id="reviewForm"
+        name="reviews"
+        method="POST"
+        data-netlify="true"
+      >
+        <input type="hidden" name="form-name" value="reviews" />
+
+        <div class="field">
+          <label for="rf-name">Your name</label>
+          <input type="text" id="rf-name" name="name" required />
+        </div>
+
+        <div class="field">
+          <label>Rating</label>
+          <div class="starinput">
+            <input type="radio" id="star5" name="rating" value="5" required><label for="star5" title="5 stars">★</label>
+            <input type="radio" id="star4" name="rating" value="4"><label for="star4" title="4 stars">★</label>
+            <input type="radio" id="star3" name="rating" value="3"><label for="star3" title="3 stars">★</label>
+            <input type="radio" id="star2" name="rating" value="2"><label for="star2" title="2 stars">★</label>
+            <input type="radio" id="star1" name="rating" value="1"><label for="star1" title="1 star">★</label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="rf-review">Your review</label>
+          <textarea id="rf-review" name="review" rows="4" required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn--primary">Submit review</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- Hidden static copy of the form so Netlify's crawler can detect it at deploy time -->
+<form name="reviews" data-netlify="true" hidden>
+  <input type="text" name="name" />
+  <input type="text" name="rating" />
+  <textarea name="review"></textarea>
+</form>
+
+<section id="services">
+  <div class="wrap">
+    <div class="chapter">
+      <span class="chapter__code">00:04</span>
+      <span class="chapter__title">What I offer</span>
+      <span class="chapter__line"></span>
+    </div>
+    <div class="services">
+      <div class="svc">
+        <div class="svc__code">// ON-SITE</div>
+        <h3>Videography</h3>
+        <p>On-location shooting for events, brands, and creators — I bring the camera, you bring the moment.</p>
+      </div>
+      <div class="svc">
+        <div class="svc__code">// STILLS</div>
+        <h3>Photography</h3>
+        <p>Product, food, and event photography shot to match your brand's look.</p>
+      </div>
+      <div class="svc">
+        <div class="svc__code">// LONG-FORM</div>
+        <h3>YouTube editing</h3>
+        <p>Full edits for vlogs, reviews, and explainers — structure, pacing, sound, and graphics.</p>
+      </div>
+      <div class="svc">
+        <div class="svc__code">// SHORTS</div>
+        <h3>Shorts &amp; Reels</h3>
+        <p>Fast, caption-driven cutdowns built for retention on vertical platforms.</p>
+      </div>
+      <div class="svc">
+        <div class="svc__code">// GRADE</div>
+        <h3>Color grading</h3>
+        <p>Consistent, mood-matched color across a whole video or channel.</p>
+      </div>
+      <div class="svc">
+        <div class="svc__code">// PROMO</div>
+        <h3>Promotional videos</h3>
+        <p>Punchy, brand-first edits for launches, campaigns, and social media ads.</p>
+      </div>
+      <div class="svc">
+        <div class="svc__code">// THUMBS</div>
+        <h3>Thumbnails</h3>
+        <p>Click-worthy thumbnail design that matches the video's promise.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact">
+  <div class="wrap">
+    <div class="chapter" style="justify-content:center;">
+      <span class="chapter__code">00:05</span>
+      <span class="chapter__title">Let's cut something</span>
+      <span class="chapter__line" style="max-width:60px;"></span>
+    </div>
+    <h2>Got footage that needs a story?</h2>
+    <p>Send over a link to your channel or raw clips and I'll tell you exactly how I'd approach the edit.</p>
+    <div class="contact__links">
+      <a class="btn btn--primary" href="mailto:jinuminer2000@gmail.com">Email me</a>
+      <a class="btn btn--ghost" href="https://www.instagram.com/jinulorance/" target="_blank" rel="noopener">Instagram</a>
+    </div>
+  </div>
+</section>
+
+<footer>© 2026 Jinu Lorance — ALL FRAMES RESERVED</footer>
+
+<div class="modal" id="modal">
+  <div class="modal__inner">
+    <div class="modal__frame" id="modalFrame">
+      <div class="modal__empty">No video linked yet — paste a YouTube/Vimeo embed URL<br>into this card's data-embed attribute in the code.</div>
+    </div>
+    <div class="modal__foot">
+      <span id="modalTitle"></span>
+      <button class="modal__close" id="modalClose">Close</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // live timecode (24fps) — signature element
+  const clockEl = document.getElementById('clock');
+  const start = performance.now();
+  function tick(){
+    const elapsed = performance.now() - start;
+    const totalFrames = Math.floor(elapsed / (1000/24));
+    const ff = totalFrames % 24;
+    const totalSec = Math.floor(totalFrames / 24);
+    const ss = totalSec % 60;
+    const mm = Math.floor(totalSec/60) % 60;
+    const hh = Math.floor(totalSec/3600);
+    const pad = n => String(n).padStart(2,'0');
+    clockEl.textContent = `${pad(hh)}:${pad(mm)}:${pad(ss)}:${pad(ff)}`;
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+
+  // scroll scrubber
+  const fill = document.getElementById('scrubFill');
+  const head = document.getElementById('scrubHead');
+  function updateScrub(){
+    const h = document.documentElement;
+    const pct = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    fill.style.width = pct + '%';
+    head.style.left = pct + '%';
+  }
+  document.addEventListener('scroll', updateScrub);
+  updateScrub();
+
+  // scroll-triggered reveal for section headers (chapters) and contact heading
+  const revealTargets = document.querySelectorAll('.chapter, .contact h2');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('in-view');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+  revealTargets.forEach(el => revealObserver.observe(el));
+
+  // review form -> Netlify Forms (AJAX submit, no page reload)
+  const reviewForm = document.getElementById('reviewForm');
+  const reviewSuccess = document.getElementById('reviewSuccess');
+  if(reviewForm){
+    reviewForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      const data = new FormData(reviewForm);
+      const encoded = new URLSearchParams(data).toString();
+      fetch('/', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: encoded
+      })
+      .then(() => {
+        reviewForm.style.display = 'none';
+        reviewSuccess.style.display = 'block';
+      })
+      .catch(() => {
+        alert('Something went wrong sending your review — please try again in a moment.');
+      });
+    });
+  }
+
+  const modal = document.getElementById('modal');
+  const modalFrame = document.getElementById('modalFrame');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalClose = document.getElementById('modalClose');
+
+  function openCard(card){
+    const embed = card.getAttribute('data-embed');
+    const type = card.getAttribute('data-type');
+    const title = card.getAttribute('data-title') || '';
+    modalTitle.textContent = title;
+    if(embed && embed.trim() !== '' && type === 'video'){
+      modalFrame.innerHTML = `<video src="${embed}" controls autoplay style="width:100%;height:100%;"></video>`;
+    } else if(embed && embed.trim() !== ''){
+      modalFrame.innerHTML = `<iframe src="${embed}" title="${title}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    } else {
+      modalFrame.innerHTML = `<div class="modal__empty">No video linked yet — paste a YouTube/Vimeo embed URL<br>into this card's data-embed attribute in the code.</div>`;
+    }
+    modal.classList.add('open');
+  }
+  function closeModal(){
+    modal.classList.remove('open');
+    modalFrame.innerHTML = '';
+  }
+  // event delegation so this also works for cards added dynamically from projects.json
+  document.addEventListener('click', e=>{
+    const card = e.target.closest('.card');
+    if(card) openCard(card);
+  });
+  document.addEventListener('keydown', e=>{
+    if(e.key === 'Enter' || e.key === ' '){
+      const card = document.activeElement && document.activeElement.closest && document.activeElement.closest('.card');
+      if(card){ e.preventDefault(); openCard(card); }
+    }
+  });
+  modalClose.addEventListener('click', closeModal);
+  modal.addEventListener('click', e=>{ if(e.target === modal) closeModal(); });
+  document.addEventListener('keydown', e=>{ if(e.key === 'Escape') closeModal(); });
+
+  // load additional projects from projects.json (managed via the /admin panel)
+  const dynamicCards = document.getElementById('dynamicCards');
+  if(dynamicCards){
+    fetch('projects.json')
+      .then(res => res.json())
+      .then(data => {
+        const projects = data.projects || [];
+        dynamicCards.innerHTML = projects.map(p => {
+          const posterStyle = p.poster
+            ? `background-image:url('${p.poster}');background-size:cover;background-position:center;`
+            : `background:linear-gradient(135deg,#1e223a,#4a5bd6 130%);`;
+          return `
+            <article class="card" tabindex="0" role="button" data-embed="${p.video}" data-type="video" data-title="${p.title}">
+              <div class="thumb" style="${posterStyle}">
+                <div class="play"></div>
+                <span class="vf-corner tl"></span><span class="vf-corner tr"></span><span class="vf-corner bl"></span><span class="vf-corner br"></span>
+              </div>
+              <div class="card__body">
+                <div class="card__tag">${p.tag || 'Work'}</div>
+                <div class="card__title">${p.title}</div>
+                <div class="card__note">${p.note || 'Click to play'}</div>
+              </div>
+            </article>`;
+        }).join('');
+        const statNum = document.getElementById('projectCount');
+        if(statNum) statNum.textContent = projects.length + 1;
+      })
+      .catch(() => { /* projects.json not found yet — fine on first setup */ });
+  }
+
+</script>
+
+</body>
+</html>
