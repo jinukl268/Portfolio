@@ -1,0 +1,67 @@
+{
+  "projects": [
+    {
+      "title": "Traditional Reel",
+      "tag": "Reel",
+      "video": "traditional_reel.mp4",
+      "poster": "posters/traditional_reel.jpg",
+      "note": "Click to play"
+    },
+    {
+      "title": "Urrak Reel",
+      "tag": "Reel",
+      "video": "urrak_reel.mp4",
+      "poster": "posters/urrak_reel.jpg",
+      "note": "Click to play"
+    },
+    {
+      "title": "Fast Cut Mix Reel",
+      "tag": "Reel",
+      "video": "fast_cut_mix_reel.mp4",
+      "poster": "posters/fast_cut_mix_reel.jpg",
+      "note": "Click to play"
+    },
+    {
+      "title": "Classic Mojito Making",
+      "tag": "Food",
+      "video": "classic_mojito_making.mp4",
+      "poster": "posters/classic_mojito_making.jpg",
+      "note": "Click to play"
+    },
+    {
+      "title": "Chicken Cones",
+      "tag": "Food",
+      "video": "Chicken_Cones.mp4",
+      "poster": "posters/chicken_cones.jpg",
+      "note": "Click to play"
+    },
+    {
+      "title": "Food",
+      "tag": "Food",
+      "video": "food.mp4",
+      "poster": "posters/food.jpg",
+      "note": "Click to play"
+    },
+    {
+      "title": "Sound Of Our Restaurant",
+      "tag": "Ambience",
+      "video": "sound_of_our_restaurent.mp4",
+      "poster": "posters/sound_of_our_restaurent.jpg",
+      "note": "Click to play"
+    },
+    {
+      "title": "Beach",
+      "tag": "Travel",
+      "video": "Beach.mp4",
+      "poster": "posters/beach.jpg",
+      "note": "Click to play"
+    },
+    {
+      "title": "Top Whiskey Bottles",
+      "tag": "Product",
+      "video": "Top_Whiskey_Bottles.mp4",
+      "poster": "posters/top_whiskey_bottles.jpg",
+      "note": "Click to play"
+    }
+  ]
+}
