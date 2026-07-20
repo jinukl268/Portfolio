@@ -1,0 +1,28 @@
+backend:
+  name: git-gateway
+  branch: main
+
+# Where uploaded media (videos, poster images) get committed to in the repo
+media_folder: "media"
+public_folder: "/media"
+
+collections:
+  - name: "projects"
+    label: "Portfolio Projects"
+    description: "Add, edit, or remove the videos shown in your 'Selects' grid. New uploads publish automatically once saved."
+    files:
+      - name: "projects"
+        label: "Projects List"
+        file: "projects.json"
+        format: "json"
+        fields:
+          - label: "Projects"
+            name: "projects"
+            widget: "list"
+            summary: "{{title}}"
+            fields:
+              - { label: "Title", name: "title", widget: "string", hint: "Shown as the card title, e.g. 'Rooftop Shoot'" }
+              - { label: "Category tag", name: "tag", widget: "string", hint: "Short label, e.g. Reel, Food, Product, Event" }
+              - { label: "Video file", name: "video", widget: "file", media_library: { config: { multiple: false } }, hint: "Upload the actual video — keep it under ~50MB where possible for fast loading" }
+              - { label: "Poster / thumbnail image", name: "poster", widget: "image", required: false, hint: "A still frame or photo to use as the card preview. If left blank, a default background is used." }
+              - { label: "Short note", name: "note", widget: "string", required: false, default: "Click to play" }
